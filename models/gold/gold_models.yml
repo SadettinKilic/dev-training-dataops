@@ -1,0 +1,27 @@
+version: 2
+
+models:
+  - name: dim_participants
+    description: "Paris 2024 Olimpiyatlarına katılan tüm sporcu ve antrenörlerin birleştirilmiş listesi."
+    columns:
+      - name: person_id
+        description: "Katılımcının benzersiz kimlik kodu."
+        tests:
+          - not_null
+          - unique
+      - name: person_type
+        description: "Katılımcının türü: Athlete veya Coach."
+        tests:
+          - accepted_values:
+              values: ['Athlete', 'Coach']
+
+
+  - name: mart_country_delegation
+    description: "Ülkelerin toplam delegasyon büyüklüğü ve sporcu/antrenör oranları."
+    columns:
+      - name: country_name
+        description: "Ülkenin tam adı."
+        tests:
+          - not_null
+      - name: total_delegation_size
+        description: "Bir ülkenin gönderdiği toplam sporcu ve antrenör sayısı."

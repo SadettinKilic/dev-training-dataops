@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: bronze
+    schema: bronze
+    tables:
+      - name: raw_athletes
+      - name: raw_coaches
+      - name: raw_nocs
+      - name: raw_events
