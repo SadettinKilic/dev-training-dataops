@@ -1,0 +1,37 @@
+name: dbt_ci_pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  dbt_run_and_test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/set-up-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          pip install dbt-databricks
+          dbt deps
+
+      - name: dbt Build (Run + Test)
+        env:
+          DBT_DATABRICKS_HOST: ${{ secrets.DBT_HOST }}
+          DBT_DATABRICKS_HTTP_PATH: ${{ secrets.DBT_HTTP_PATH }}
+          DBT_DATABRICKS_TOKEN: ${{ secrets.DBT_TOKEN }}
+        run: |
+          # dbt build komutu önce modelleri run eder, başarılı olursa hemen ardından testleri çalıştırır.
+          # Gold katmanındaki testleri de otomatik olarak kapsar.
+          dbt build
