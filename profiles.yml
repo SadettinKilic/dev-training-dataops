@@ -1,0 +1,11 @@
+dataops_dev:  # dbt_project.yml dosyasındaki 'profile:' ismiyle aynı olmalı
+  target: dev
+  outputs:
+    dev:
+      type: databricks
+      catalog: dataops # Databricks'teki Catalog adın
+      schema: silver   # Varsayılan şeman
+      host: "{{ env_var('DBT_DATABRICKS_HOST') }}"
+      http_path: "{{ env_var('DBT_DATABRICKS_HTTP_PATH') }}"
+      token: "{{ env_var('DBT_DATABRICKS_TOKEN') }}"
+      threads: 4

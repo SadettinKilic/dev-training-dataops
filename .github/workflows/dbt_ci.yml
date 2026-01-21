@@ -34,4 +34,4 @@ jobs:
         run: |
           # dbt build komutu önce modelleri run eder, başarılı olursa hemen ardından testleri çalıştırır.
           # Gold katmanındaki testleri de otomatik olarak kapsar.
-          dbt build
+          dbt build --profiles-dir .
