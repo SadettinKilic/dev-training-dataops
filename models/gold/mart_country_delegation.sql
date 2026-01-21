@@ -1,4 +1,5 @@
-{{ config(materialized='view') }}
+{{ config(materialized='view',
+    tags=['gold']) }}
 
 SELECT
     n.country AS country_name,

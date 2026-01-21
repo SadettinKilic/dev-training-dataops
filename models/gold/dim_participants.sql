@@ -1,4 +1,5 @@
-{{ config(materialized='view') }}
+{{ config(materialized='view',
+    tags=['gold']) }}
 
 WITH athlete_base AS (
     SELECT

@@ -1,5 +1,6 @@
 {{ config(
-    schema='silver'
+    schema='silver',
+    tags=['silver']
 ) }}
 
 SELECT *
