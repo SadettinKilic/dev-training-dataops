@@ -15,12 +15,12 @@ jobs:
         run: pip install sqlfluff-templater-dbt
 
       - name: "SQL Lint & Fix"
-	id: lint_fix
+        id: lint_fix
         run: sqlfluff fix models --dialect databricks --ignore parsing --force
-	continue-on-error: true
+        continue-on-error: true
 
       - name: "Commit changes"
-	if: steps.lint_fix.outcome == 'success' || steps.lint_fix.outcome == 'failure'
+        if: steps.lint_fix.outcome == 'success' || steps.lint_fix.outcome == 'failure'
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: "style: sqlfluff auto-fix linting errors"
