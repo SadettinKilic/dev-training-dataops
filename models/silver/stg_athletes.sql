@@ -2,6 +2,5 @@
     schema='silver'
 ) }}
 
-SELECT 
-	* 
+SELECT *
 FROM {{ source('bronze', 'raw_athletes') }}
