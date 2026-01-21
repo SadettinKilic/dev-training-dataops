@@ -48,4 +48,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Final Status"
-        run: echo "Islem tamamlandi. Durum: ${{ job.status }}"
+        run: |
+          echo "Islem tamamlandi. Durum: ${{ job.status }}"
