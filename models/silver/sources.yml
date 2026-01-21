@@ -5,6 +5,18 @@ sources:
     schema: bronze
     tables:
       - name: raw_athletes
+	freshness:
+          warn_after: {count: 168, period: hour} # 7 gün (24*7)
+          error_after: {count: 200, period: hour}
       - name: raw_coaches
+	freshness:
+          warn_after: {count: 168, period: hour} # 7 gün (24*7)
+          error_after: {count: 200, period: hour}
       - name: raw_nocs
+	freshness:
+          warn_after: {count: 168, period: hour} # 7 gün (24*7)
+          error_after: {count: 200, period: hour}
       - name: raw_events
+	freshness:
+          warn_after: {count: 168, period: hour} # 7 gün (24*7)
+          error_after: {count: 200, period: hour}
