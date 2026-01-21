@@ -4,14 +4,23 @@ on: [push, pull_request]
 
 jobs:
   static_analysis:
-    name: "Kod Kalite Kontrolü"
+    name: "Kod Kalite Kontrolü ve Otomatik Düzeltme"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
       - name: "Install sqlfluff"
         run: pip install sqlfluff-templater-dbt
-      - name: "SQL Lint Check"
-        run: sqlfluff lint models --dialect databricks --ignore parsing
+
+      - name: "SQL Lint & Fix"
+        run: sqlfluff fix models --dialect databricks --ignore parsing --yes
+
+      - name: "Commit changes"
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "style: sqlfluff auto-fix linting errors"
 
   data_freshness:
     name: "Veri Güncelliği"
