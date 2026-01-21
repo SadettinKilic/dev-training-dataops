@@ -59,6 +59,12 @@ jobs:
     if: always()
     runs-on: ubuntu-latest
     steps:
-      - name: "Final Status"
+      - name: "Final Status Check"
         run: |
-          echo "Islem tamamlandi. Durum: ${{ job.status }}"
+          echo "İşlem tamamlandı. Durum: ${{ needs.run_and_test.result }}"
+          
+          # Eğer run_and_test başarılı değilse, bu adımı da hata koduyla kapat
+          if [ "${{ needs.run_and_test.result }}" != "success" ]; then
+            echo "Hata: Ana pipeline başarısız olduğu için bu bildirim de hata vererek sonlanıyor."
+            exit 1
+          fi
