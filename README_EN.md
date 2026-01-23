@@ -1,12 +1,13 @@
 <p align="center">
-  <a href="./README.md"><img src="https://img.shields.io/badge/Language-Türkçe-white"></a>
-  <a href="./README_EN.md"><img src="https://img.shields.io/badge/Language-English-red"></a>
+  <strong>Language:</strong>
+  <a href="./README.md">Türkçe</a> |
+  <span style="color:#e5533d; font-weight:bold;">English</span>
 </p>
 
+---
 * * *
 
 # 🏅 Paris 2024 Olympics DataOps & Analytics Project
-[**[🇹🇷 Türkçe versiyon için tıklayın](README.md)**] | [🇺🇸 English]
 
 This project aims to create an **End-to-End** Data Engineering pipeline using Paris 2024 Summer Olympic Games data. Designed in accordance with **Medallion Architecture** principles on the Azure ecosystem, it is a modern data platform that brings together ADF, Databricks, and dbt technologies.
 * * *
