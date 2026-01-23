@@ -1,3 +1,8 @@
+<p align="center">
+  <a href="./README.md"><img src="https://img.shields.io/badge/Language-Türkçe-red"></a>
+  <a href="./README_EN.md"><img src="https://img.shields.io/badge/Language-English-white"></a>
+</p>
+
 * * *
 
 # 🏅 Paris 2024 Olympics DataOps & Analytics Project

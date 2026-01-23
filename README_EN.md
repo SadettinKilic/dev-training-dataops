@@ -1,3 +1,8 @@
+<p align="center">
+  <a href="./README.md"><img src="https://img.shields.io/badge/Language-Türkçe-white"></a>
+  <a href="./README_EN.md"><img src="https://img.shields.io/badge/Language-English-red"></a>
+</p>
+
 * * *
 
 # 🏅 Paris 2024 Olympics DataOps & Analytics Project
@@ -58,12 +63,12 @@ Define the following permissions so that services can communicate with each othe
 
 Set up the Unity Catalog structure via the Databricks SQL Editor:
 ```sql
-    CREATE CATALOG IF NOT EXISTS dataops MANAGED LOCATION ‘abfss://dbx-managed@sttrainingdataops.dfs.core.windows.net/’;
+    CREATE CATALOG IF NOT EXISTS dataops MANAGED LOCATION 'abfss://dbx-managed@sttrainingdataops.dfs.core.windows.net/';
     USE CATALOG dataops;
 
-    CREATE SCHEMA IF NOT EXISTS bronze MANAGED LOCATION ‘abfss://bronze@sttrainingdataops.dfs.core.windows.net/’;
-    CREATE SCHEMA IF NOT EXISTS silver MANAGED LOCATION ‘abfss://silver@sttrainingdataops.dfs.core.windows.net/’;
-    CREATE SCHEMA IF NOT EXISTS gold MANAGED LOCATION ‘abfss://gold@sttrainingdataops.dfs.core.windows.net/’;
+    CREATE SCHEMA IF NOT EXISTS bronze MANAGED LOCATION 'abfss://bronze@sttrainingdataops.dfs.core.windows.net/';
+    CREATE SCHEMA IF NOT EXISTS silver MANAGED LOCATION 'abfss://silver@sttrainingdataops.dfs.core.windows.net/';
+    CREATE SCHEMA IF NOT EXISTS gold MANAGED LOCATION 'abfss://gold@sttrainingdataops.dfs.core.windows.net/';
 ```
 ### 4. Data Definition and Bronze Table Structures
 
@@ -79,23 +84,23 @@ Tables in the Bronze layer are defined under Unity Catalog as follows, preservin
     /* Athlete Table (Parquet Format) */
     CREATE TABLE IF NOT EXISTS bronze.raw_athletes
     USING PARQUET
-    LOCATION ‘abfss://bronze@sttrainingdataops.dfs.core.windows.net/athletes/’;
+    LOCATION 'abfss://bronze@sttrainingdataops.dfs.core.windows.net/athletes/';
 
     /* Coach Table (Parquet Format) */
     CREATE TABLE IF NOT EXISTS bronze.raw_coaches
     USING PARQUET
-    LOCATION ‘abfss://bronze@sttrainingdataops.dfs.core.windows.net/coaches/’;
+    LOCATION 'abfss://bronze@sttrainingdataops.dfs.core.windows.net/coaches/';
 
     /* Event Table (Parquet Format) */
     CREATE TABLE IF NOT EXISTS bronze.raw_events
     USING PARQUET
-    LOCATION ‘abfss://bronze@sttrainingdataops.dfs.core.windows.net/events/’;
+    LOCATION 'abfss://bronze@sttrainingdataops.dfs.core.windows.net/events/';
 
     /* NOC (National Olympic Committees) Table (CSV Format) */
     CREATE TABLE IF NOT EXISTS bronze.raw_nocs
     USING CSV
     OPTIONS (header=‘true’, inferSchema=‘true’)
-    LOCATION ‘abfss://bronze@sttrainingdataops.dfs.core.windows.net/nocs/’;
+    LOCATION 'abfss://bronze@sttrainingdataops.dfs.core.windows.net/nocs/';
 ```
 ### 5. ADF Pipeline Configuration
 Two main processes are managed on ADF:
