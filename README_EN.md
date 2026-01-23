@@ -5,6 +5,20 @@
   </a>
   <img src="https://img.shields.io/badge/English-red">
 </p>
+<p align="center">
+  <!-- Core Tech -->
+  <img src="https://img.shields.io/badge/dbt-Analytics-orange">
+  <img src="https://img.shields.io/badge/Microsoft%20Azure-Cloud-blue">
+
+  <!-- Architecture -->
+  <img src="https://img.shields.io/badge/Architecture-Medallion-success">
+
+  <!-- REAL CI BADGE -->
+  <img src="https://github.com/SadettinKilic/dev-training-dataops/actions/workflows/dbt_ci.yml/badge.svg">
+
+  <!-- DataOps -->
+  <img src="https://img.shields.io/badge/DataOps-Automated-informational">
+</p>
 
 * * *
 
