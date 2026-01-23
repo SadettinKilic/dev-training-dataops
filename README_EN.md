@@ -1,10 +1,11 @@
-<p align="center">
+<p align="left">
   <strong>Language:</strong>
-  <a href="./README.md">Türkçe</a> |
-  <span style="color:#e5533d; font-weight:bold;">English</span>
+  <a href="./README.md">
+    <img src="https://img.shields.io/badge/T%C3%BCrk%C3%A7e-lightgrey">
+  </a>
+  <img src="https://img.shields.io/badge/English-red">
 </p>
 
----
 * * *
 
 # 🏅 Paris 2024 Olympics DataOps & Analytics Project
