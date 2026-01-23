@@ -5,7 +5,7 @@
     <img src="https://img.shields.io/badge/English-lightgrey">
   </a>
 </p>
-<p align="center">
+<p align="left">
   <!-- Core Tech -->
   <img src="https://img.shields.io/badge/dbt-Analytics-orange">
   <img src="https://img.shields.io/badge/Microsoft%20Azure-Cloud-blue">
