@@ -1,3 +1,3 @@
 packages:
   - package: brooklyn-data/dbt_artifacts
-    version: 2.1.1 # En güncel ve stabil versiyon
+    version: 2.10.0 # En güncel ve stabil versiyon
