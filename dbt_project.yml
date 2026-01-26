@@ -52,6 +52,9 @@ models:
     +schema: monitoring
     +enabled: true
 
+on-run-end:
+  - "{{ dbt_artifacts.upload_results(results) }}"
+
 vars:
   dbt_artifacts_database: dataops
   dbt_artifacts_schema: monitoring
