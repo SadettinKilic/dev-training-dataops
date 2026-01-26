@@ -45,10 +45,13 @@ models:
       +schema: gold
       +materialized: view
 
+    monitoring:
+      +schema: monitoring
+
   dbt_artifacts:
-    +schema: bronze
+    +schema: monitoring
     +enabled: true
 
 vars:
   dbt_artifacts_database: dataops
-  dbt_artifacts_schema: bronze
+  dbt_artifacts_schema: monitoring

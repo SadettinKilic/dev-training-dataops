@@ -57,7 +57,7 @@ jobs:
 
       - name: Upload dbt Artifacts
         if: always() 
-        run: dbt run-operation upload_dbt_artifacts --profiles-dir .
+        run: dbt run-operation dataops_dev.upload_dbt_artifacts --profiles-dir .
         env:
           DBT_DATABRICKS_HOST: ${{ secrets.DBT_HOST }}
           DBT_DATABRICKS_HTTP_PATH: ${{ secrets.DBT_HTTP_PATH }}

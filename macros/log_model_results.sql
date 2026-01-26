@@ -2,7 +2,7 @@
   {% if execute %}
     {%- set table_exists = load_relation(this) is not none -%}
     {%- if table_exists -%}
-      insert into dataops.bronze.audit_logs (model_name, execution_time, row_count, status)
+      insert into dataops.monitoring.audit_logs (model_name, execution_time, row_count, status)
       select 
           '{{ this.name }}', 
           current_timestamp(), 
