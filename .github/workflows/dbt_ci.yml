@@ -46,12 +46,22 @@ jobs:
           python-version: '3.9'
       - name: "Install dbt"
         run: pip install dbt-databricks
+      - name: Install dbt Dependencies
+        run: dbt deps --profiles-dir .
       - name: "dbt Build"
         env:
           DBT_DATABRICKS_HOST: ${{ secrets.DBT_HOST }}
           DBT_DATABRICKS_HTTP_PATH: ${{ secrets.DBT_HTTP_PATH }}
           DBT_DATABRICKS_TOKEN: ${{ secrets.DBT_TOKEN }}
         run: dbt build --profiles-dir .
+
+      - name: Upload dbt Artifacts
+        if: always() 
+        run: dbt run-operation upload_dbt_artifacts --profiles-dir .
+        env:
+          DBT_DATABRICKS_HOST: ${{ secrets.DBT_HOST }}
+          DBT_DATABRICKS_HTTP_PATH: ${{ secrets.DBT_HTTP_PATH }}
+          DBT_DATABRICKS_TOKEN: ${{ secrets.DBT_TOKEN }}
 
   notify:
     name: "Bilgilendirme"

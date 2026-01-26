@@ -30,6 +30,7 @@ clean-targets:         # directories to be removed by `dbt clean`
 # directory as views. These settings can be overridden in the individual model
 # files using the `{{ config(...) }}` macro.
 models:
+  +post-hook: "{{ log_model_results() }}"
   dataops_dev: # Buraya dbt init sırasında verdiğin proje ismini yaz
     +catalog: dataops   # Her şey bu kataloğa gidecek
     
@@ -43,3 +44,7 @@ models:
     gold:
       +schema: gold
       +materialized: view
+
+vars:
+  dbt_artifacts_database: dataops
+  dbt_artifacts_schema: bronze
