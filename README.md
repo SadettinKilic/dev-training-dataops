@@ -147,7 +147,6 @@ GitHub üzerindeki workflow dosyamız şu adımları otomatik olarak gerçekleş
       
 **3\. Sürüm Kontrolü ve Entegrasyon**
     
-
 -   **ADF & dbt Sync:** ADF üzerindeki Web Activity, her zaman GitHub'daki "Production" branch'inde bulunan en güncel dbt kodunu tetikler. Böylece geliştirme (dev) ortamında yapılan testler onaylanmadan canlıya geçmez.
 
 ### 📊 İzleme ve Gözlemlenebilirlik (DataOps Dashboard)
@@ -161,7 +160,7 @@ Projenin sağlığı, performansı ve veri kalitesi **Databricks SQL Dashboard**
 ### 📖 Canlı Dökümantasyon ve Veri Soyağacı (Lineage)
 ### 
 Projenin teknik detayları ve tablolar arası ilişkiler **dbt Docs** ile otomatik olarak belgelenmektedir.
--   **[dbt Docs Sayfası]**(https://sadettinkilic.github.io/dev-training-dataops/)
+-   **[dbt Docs Sayfası](https://sadettinkilic.github.io/dev-training-dataops/)**
 -   **İnteraktif Soyağacı:** Bronze -> Silver -> Gold katmanları arasındaki veri akışını görsel olarak inceleyebilirsiniz.
 -   **Veri Kataloğu:** Tablo şemaları, sütun açıklamaları ve uygulanan dbt testleri.
   
