@@ -60,9 +60,26 @@ jobs:
 
   create_docs:
     name: "Create Documentations"
+    needs: run_and_test
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+      
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: "Install dbt"
+        run: pip install dbt-databricks
+
+      - name: Install dbt Dependencies
+        run: dbt deps --profiles-dir .
+
       - name: Generate dbt Docs
+        env:
+          DBT_DATABRICKS_HOST: ${{ secrets.DBT_HOST }}
+          DBT_DATABRICKS_HTTP_PATH: ${{ secrets.DBT_HTTP_PATH }}
+          DBT_DATABRICKS_TOKEN: ${{ secrets.DBT_TOKEN }}
         run: dbt docs generate --profiles-dir .
 
       - name: Prepare Docs for Deployment
@@ -81,7 +98,7 @@ jobs:
 
   notify:
     name: "Bilgilendirme"
-    needs: run_and_test
+    needs: create_docs
     if: always()
     runs-on: ubuntu-latest
     steps:
