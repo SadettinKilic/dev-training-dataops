@@ -149,8 +149,22 @@ GitHub üzerindeki workflow dosyamız şu adımları otomatik olarak gerçekleş
     
 
 -   **ADF & dbt Sync:** ADF üzerindeki Web Activity, her zaman GitHub'daki "Production" branch'inde bulunan en güncel dbt kodunu tetikler. Böylece geliştirme (dev) ortamında yapılan testler onaylanmadan canlıya geçmez.
-    
 
+### 📊 İzleme ve Gözlemlenebilirlik (DataOps Dashboard)
+### 
+Projenin sağlığı, performansı ve veri kalitesi **Databricks SQL Dashboard** üzerinden anlık olarak takip edilmektedir.
+-   **Pipeline Güvenilirliği:** Günlük başarılı/hatalı model çalışmaları.  
+-   **Model Performansı (Wall of Shame):** En çok kaynak tüketen ve optimizasyon gerektiren modellerin tespiti.
+-   **Veri Akış Hızı (Throughput):** Saniyede işlenen satır sayısı bazında SQL verimlilik analizi.
+-   **Veri Hacmi Drift Analizi:** Kaynak sistemlerden gelen veri miktarındaki ani değişimlerin takibi.
+
+### 📖 Canlı Dökümantasyon ve Veri Soyağacı (Lineage)
+### 
+Projenin teknik detayları ve tablolar arası ilişkiler **dbt Docs** ile otomatik olarak belgelenmektedir.
+-   **[dbt Docs Sayfası]**(https://sadettinkilic.github.io/dev-training-dataops/)
+-   **İnteraktif Soyağacı:** Bronze -> Silver -> Gold katmanları arasındaki veri akışını görsel olarak inceleyebilirsiniz.
+-   **Veri Kataloğu:** Tablo şemaları, sütun açıklamaları ve uygulanan dbt testleri.
+  
 * * *
 
 ## ⚙️ Ekstra Konfigürasyon Notları
