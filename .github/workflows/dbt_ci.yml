@@ -104,10 +104,9 @@ jobs:
     steps:
       - name: "Final Status Check"
         run: |
-          echo "İşlem tamamlandı. Durum: ${{ needs.run_and_test.result }}"
+          echo "İşlem tamamlandı. Durum: ${{ needs.create_docs.result }}"
           
-          # Eğer run_and_test başarılı değilse, bu adımı da hata koduyla kapat
-          if [ "${{ needs.run_and_test.result }}" != "success" ]; then
-            echo "Hata: Ana pipeline başarısız olduğu için bu bildirim de hata vererek sonlanıyor."
+          if [ "${{ needs.create_docs.result }}" != "success" ]; then
+            echo "Hata: Ana pipeline başarısız"
             exit 1
           fi
