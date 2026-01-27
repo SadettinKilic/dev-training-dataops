@@ -60,6 +60,7 @@ jobs:
 
   create_docs:
     name: "Create Documentations"
+    runs-on: ubuntu-latest
     steps:
       - name: Generate dbt Docs
         run: dbt docs generate --profiles-dir .
