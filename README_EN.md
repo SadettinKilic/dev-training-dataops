@@ -66,6 +66,7 @@ Create the following container structure on the Storage Account:
 -   `source/raw_data`: Raw CSV files downloaded from Kaggle.
 -   `bronze`, `silver`, `gold`: Processed data layers.
 -   `dbx-managed`: Space reserved for the Databricks Managed Catalog.
+-   `monitoring`: It includes monitoring tables. It will be used for the dashboard.
 
 ### 2\. IAM and Security Configuration (Important)
 
@@ -85,6 +86,7 @@ Set up the Unity Catalog structure via the Databricks SQL Editor:
     CREATE SCHEMA IF NOT EXISTS bronze MANAGED LOCATION 'abfss://bronze@sttrainingdataops.dfs.core.windows.net/';
     CREATE SCHEMA IF NOT EXISTS silver MANAGED LOCATION 'abfss://silver@sttrainingdataops.dfs.core.windows.net/';
     CREATE SCHEMA IF NOT EXISTS gold MANAGED LOCATION 'abfss://gold@sttrainingdataops.dfs.core.windows.net/';
+    CREATE SCHEMA IF NOT EXISTS monitoring MANAGED LOCATION 'abfss://monitoring@sttrainingdataops.dfs.core.windows.net/';
 ```
 ### 4. Data Definition and Bronze Table Structures
 
@@ -117,6 +119,13 @@ Tables in the Bronze layer are defined under Unity Catalog as follows, preservin
     USING CSV
     OPTIONS (header=‘true’, inferSchema=‘true’)
     LOCATION 'abfss://bronze@sttrainingdataops.dfs.core.windows.net/nocs/';
+
+    CREATE TABLE IF NOT EXISTS dataops.monitoring.audit_logs (
+      model_name STRING,
+      execution_time TIMESTAMP,
+      row_count LONG,
+      status STRING
+    ) USING DELTA;
 ```
 ### 5. ADF Pipeline Configuration
 Two main processes are managed on ADF:
@@ -149,7 +158,21 @@ Our workflow file on GitHub automatically performs the following steps:
 
 
 -   **ADF & dbt Sync:** The Web Activity on ADF always triggers the latest dbt code found in the “Production” branch on GitHub. This ensures that tests performed in the development (dev) environment do not go live without approval.
+  
+### 📊 Monitoring and Observability (DataOps Dashboard)
+###
+The health, performance, and data quality of the project are monitored in real-time via the **Databricks SQL Dashboard**.
+-   **Pipeline Reliability:** Daily successful/failed model runs.
+-   **Model Performance (Wall of Shame):** Identification of models consuming the most resources and requiring optimization.
+-   **Data Flow Speed (Throughput):** SQL efficiency analysis based on the number of rows processed per second.
+-   **Data Volume Drift Analysis:** Tracking sudden changes in the amount of data coming from source systems.
 
+### 📖 Live Documentation and Data Lineage
+###
+The technical details of the project and the relationships between tables are automatically documented with **dbt Docs**.
+-   **[dbt Docs Page](https://sadettinkilic.github.io/dev-training-dataops/)** You can view the flow diagram by clicking the ‘Lineage’ button at the bottom right.
+-   **Interactive Lineage:** You can visually examine the data flow between the Bronze -> Silver -> Gold layers.
+-   **Data Catalog:** Table schemas, column descriptions, and applied dbt tests.
 
 * * *
 ## ⚙️ Additional Configuration Notes
