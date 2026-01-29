@@ -17,6 +17,7 @@
   <img src="https://github.com/SadettinKilic/dev-training-dataops/actions/workflows/dbt_ci.yml/badge.svg">
 
   <!-- DataOps -->
+  <img src="https://img.shields.io/badge/Docker-Container-blue?logo=docker&logoColor=white">
   <img src="https://img.shields.io/badge/DataOps-Automated-informational">
 </p>
 

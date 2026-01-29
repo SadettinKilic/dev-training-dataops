@@ -17,6 +17,7 @@
   <img src="https://github.com/SadettinKilic/dev-training-dataops/actions/workflows/dbt_ci.yml/badge.svg">
 
   <!-- DataOps -->
+  <img src="https://img.shields.io/badge/Docker-Container-blue?logo=docker&logoColor=white">
   <img src="https://img.shields.io/badge/DataOps-Automated-informational">
 </p>
 
@@ -82,13 +83,13 @@ Define the following permissions on Azure so that services can communicate with 
 
 Set up the Unity Catalog structure via the Databricks SQL Editor (you will need to create external locations beforehand):
 ```sql
-    CREATE CATALOG IF NOT EXISTS dataops MANAGED LOCATION ‘abfss://dbx-managed@sttrainingdataops.dfs.core.windows.net/’;
+    CREATE CATALOG IF NOT EXISTS dataops MANAGED LOCATION 'abfss://dbx-managed@sttrainingdataops.dfs.core.windows.net/';
     USE CATALOG dataops; 
     
-    CREATE SCHEMA IF NOT EXISTS bronze MANAGED LOCATION ‘abfss://bronze@sttrainingdataops.dfs.core.windows.net/’;
-    CREATE SCHEMA IF NOT EXISTS silver MANAGED LOCATION ‘abfss://silver@sttrainingdataops.dfs.core.windows.net/’;
-    CREATE SCHEMA IF NOT EXISTS gold MANAGED LOCATION ‘abfss://gold@sttrainingdataops.dfs.core.windows.net/’;
-    CREATE SCHEMA IF NOT EXISTS monitoring MANAGED LOCATION ‘abfss://monitoring@sttrainingdataops.dfs.core.windows.net/’;
+    CREATE SCHEMA IF NOT EXISTS bronze MANAGED LOCATION 'abfss://bronze@sttrainingdataops.dfs.core.windows.net/';
+    CREATE SCHEMA IF NOT EXISTS silver MANAGED LOCATION 'abfss://silver@sttrainingdataops.dfs.core.windows.net/';
+    CREATE SCHEMA IF NOT EXISTS gold MANAGED LOCATION 'abfss://gold@sttrainingdataops.dfs.core.windows.net/';
+    CREATE SCHEMA IF NOT EXISTS monitoring MANAGED LOCATION 'abfss://monitoring@sttrainingdataops.dfs.core.windows.net/';
 ```
 ### 4. Data Definition and Bronze Table Structures
 
@@ -104,23 +105,23 @@ Tables in the Bronze layer are defined under Unity Catalog as follows, preservin
     /* Athlete Table (Parquet Format) */
     CREATE TABLE IF NOT EXISTS bronze.raw_athletes
     USING PARQUET
-    LOCATION ‘abfss://bronze@sttrainingdataops.dfs.core.windows.net/athletes/’;
+    LOCATION 'abfss://bronze@sttrainingdataops.dfs.core.windows.net/athletes/';
     
     /* Coach Table (Parquet Format) */
     CREATE TABLE IF NOT EXISTS bronze.raw_coaches
     USING PARQUET
-    LOCATION ‘abfss://bronze@sttrainingdataops.dfs.core.windows.net/coaches/’;
+    LOCATION 'abfss://bronze@sttrainingdataops.dfs.core.windows.net/coaches/';
     
     /* Event Table (Parquet Format) */
     CREATE TABLE IF NOT EXISTS bronze.raw_events
     USING PARQUET
-    LOCATION ‘abfss://bronze@sttrainingdataops.dfs.core.windows.net/events/’;
+    LOCATION 'abfss://bronze@sttrainingdataops.dfs.core.windows.net/events/';
 
     /* NOC (National Olympic Committees) Table (CSV Format) */
     CREATE TABLE IF NOT EXISTS bronze.raw_nocs
     USING CSV
     OPTIONS (header=‘true’, inferSchema=‘true’)
-    LOCATION ‘abfss://bronze@sttrainingdataops.dfs.core.windows.net/nocs/’;
+    LOCATION 'abfss://bronze@sttrainingdataops.dfs.core.windows.net/nocs/';
 
     CREATE TABLE IF NOT EXISTS dataops.monitoring.audit_logs (
       model_name STRING,
