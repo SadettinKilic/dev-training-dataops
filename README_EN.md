@@ -145,7 +145,9 @@ You can run all dbt models on Databricks using Docker Compose:
 ```bash
     docker-compose up
 ```
-### 3\. CI/CD Process (GitHub Actions)
+
+* * *
+### CI/CD Process (GitHub Actions)
 ###
 The project has an advanced pipeline structure that automatically triggers with every code change:
 -   **Static Analysis:** SQL code standards are checked and automatically corrected using `sqlfluff`.

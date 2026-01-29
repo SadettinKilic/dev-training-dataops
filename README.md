@@ -144,7 +144,8 @@ Docker Compose kullanarak tüm dbt modellerini Databricks üzerinde koşturabili
 ```bash
     docker-compose up
 ```
-### 3\. CI/CD Süreci (GitHub Actions)
+* * *
+### CI/CD Süreci (GitHub Actions)
 ### 
 Proje, her kod değişikliğinde otomatik olarak devreye giren gelişmiş bir pipeline yapısına sahiptir:
 -   **Static Analysis:** `sqlfluff` ile SQL kod standartları denetlenir ve otomatik düzeltilir.
