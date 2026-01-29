@@ -54,6 +54,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: "Install dbt Dependencies"
+        run: dbt deps --profiles-dir .
+
       - name: "dbt Build"
         env:
           DBT_DATABRICKS_HOST: ${{ secrets.DBT_HOST }}
