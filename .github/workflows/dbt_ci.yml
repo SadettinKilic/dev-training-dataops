@@ -44,7 +44,7 @@ jobs:
 
   run_and_test:
     name: "Model Build & Gold Tests"
-    needs: [static_analysis]
+    needs: [static_analysis, data_freshness]
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/sadettinkilic/dataops-dbt-runner:latest
