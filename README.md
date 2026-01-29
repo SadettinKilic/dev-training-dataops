@@ -1,21 +1,21 @@
 <p align="left">
   <strong>Language:</strong>
-  <img src="https://img.shields.io/badge/T%C3%BCrk%C3%A7e-red">
+    <img src="https://img.shields.io/badge/T%C3%BCrk%C3%A7e-red">
   <a href="./README_EN.md">
     <img src="https://img.shields.io/badge/English-lightgrey">
   </a>
 </p>
 <p align="left">
   <!-- Core Tech -->
-  <img src="https://img.shields.io/badge/Azure-Data%20Factory-blue">
-  <img src="https://img.shields.io/badge/Azure-Databricks-tomato">
+  <img src="https://img.shields.io/badge/dbt-Analytics-orange">
   <img src="https://img.shields.io/badge/Microsoft%20Azure-Cloud-blue">
 
   <!-- Architecture -->
   <img src="https://img.shields.io/badge/Architecture-Medallion-success">
 
   <!-- REAL CI BADGE -->
-  <img src="https://img.shields.io/badge/CI%2FCD-Handled%20in%20dbt%20Repo-lightgrey">
+  <img src="https://github.com/SadettinKilic/dev-training-dataops/actions/workflows/dbt_ci.yml/badge.svg">
+
   <!-- DataOps -->
   <img src="https://img.shields.io/badge/DataOps-Automated-informational">
 </p>
