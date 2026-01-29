@@ -1,4 +1,4 @@
-dataops_dev:  # dbt_project.yml dosyasındaki 'profile:' ismiyle aynı olmalı
+dataops_dev:
   target: dev
   outputs:
     dev:

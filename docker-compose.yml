@@ -1,0 +1,8 @@
+services:
+  dbt:
+    image: ghcr.io/sadettinkilic/dataops-dbt-runner:latest
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    command: dbt build --profiles-dir .
