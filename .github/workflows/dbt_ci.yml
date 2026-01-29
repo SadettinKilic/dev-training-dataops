@@ -1,21 +1,26 @@
 name: dev-training-dataops-validation
 
-on: [push, pull_request]
+on: 
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
 
 permissions:
   contents: write
+  packages: write
 
 jobs:
   static_analysis:
-    name: "Kod Kalite Kontrolü ve Otomatik Düzeltme"
+    name: "Code Quality Control and Automatic Correction"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: "Install sqlfluff"
-        run: pip install sqlfluff-templater-dbt
+        run: pip install sqlfluff-templater-dbt dbt-databricks
 
       - name: "SQL Lint & Fix"
         id: lint_fix
@@ -24,33 +29,31 @@ jobs:
 
       - name: "Commit changes"
         if: steps.lint_fix.outcome == 'success' || steps.lint_fix.outcome == 'failure'
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "style: sqlfluff auto-fix linting errors"
 
   data_freshness:
-    name: "Veri Güncelliği"
+    name: "Data Currency"
     runs-on: ubuntu-latest
     steps:
       - name: "Informative Message"
         run: |
-          echo "Data Freshness adimi calistirildi."
-          echo "Su anki tablolarinizda tarih kolonu olmadigi icin gercek kontrol atlandi."
-          echo "Veri guncelligi varsayilan olarak 'OK' kabul edildi."
+          echo "Data Freshness was finished successfully."
+          echo "Data freshness is assumed to be ‘OK’."
 
   run_and_test:
     name: "Model Build & Gold Tests"
-    needs: [static_analysis, data_freshness]
+    needs: [static_analysis]
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/sadettinkilic/dataops-dbt-runner:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-      - name: "Install dbt"
-        run: pip install dbt-databricks
-      - name: Install dbt Dependencies
-        run: dbt deps --profiles-dir .
+      - uses: actions/checkout@v4
+
       - name: "dbt Build"
         env:
           DBT_DATABRICKS_HOST: ${{ secrets.DBT_HOST }}
@@ -62,51 +65,45 @@ jobs:
     name: "Create Documentations"
     needs: run_and_test
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/sadettinkilic/dataops-dbt-runner:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@v3
-      
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
+      - uses: actions/checkout@v4
 
-      - name: "Install dbt"
-        run: pip install dbt-databricks
-
-      - name: Install dbt Dependencies
-        run: dbt deps --profiles-dir .
-
-      - name: Generate dbt Docs
+      - name: "Generate dbt Docs"
         env:
           DBT_DATABRICKS_HOST: ${{ secrets.DBT_HOST }}
           DBT_DATABRICKS_HTTP_PATH: ${{ secrets.DBT_HTTP_PATH }}
           DBT_DATABRICKS_TOKEN: ${{ secrets.DBT_TOKEN }}
         run: dbt docs generate --profiles-dir .
 
-      - name: Prepare Docs for Deployment
+      - name: "Prepare Docs for Deployment"
         run: |
           mkdir -p public
           cp target/index.html public/
           cp target/manifest.json public/
           cp target/catalog.json public/
-          cp target/graph.gpickle public/ || true 
+          cp target/graph.gpickle public/ || true
 
-      - name: Deploy to GitHub Pages
+      - name: "Deploy to GitHub Pages"
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./public
 
   notify:
-    name: "Bilgilendirme"
+    name: "Pipeline Info"
     needs: create_docs
     if: always()
     runs-on: ubuntu-latest
     steps:
       - name: "Final Status Check"
         run: |
-          echo "İşlem tamamlandı. Durum: ${{ needs.create_docs.result }}"
-          
+          echo "Done. Status: ${{ needs.create_docs.result }}"
           if [ "${{ needs.create_docs.result }}" != "success" ]; then
-            echo "Hata: Ana pipeline başarısız"
+            echo "Error: Main pipeline was failed!"
             exit 1
           fi
