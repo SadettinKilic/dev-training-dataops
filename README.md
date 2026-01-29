@@ -7,15 +7,15 @@
 </p>
 <p align="left">
   <!-- Core Tech -->
-  <img src="https://img.shields.io/badge/dbt-Analytics-orange">
+  <img src="https://img.shields.io/badge/Azure-Data%20Factory-blue">
+  <img src="https://img.shields.io/badge/Azure-Databricks-tomato">
   <img src="https://img.shields.io/badge/Microsoft%20Azure-Cloud-blue">
 
   <!-- Architecture -->
   <img src="https://img.shields.io/badge/Architecture-Medallion-success">
 
   <!-- REAL CI BADGE -->
-  <img src="https://github.com/SadettinKilic/dev-training-dataops/actions/workflows/dbt_ci.yml/badge.svg">
-
+  <img src="https://img.shields.io/badge/CI%2FCD-Handled%20in%20dbt%20Repo-lightgrey">
   <!-- DataOps -->
   <img src="https://img.shields.io/badge/DataOps-Automated-informational">
 </p>
@@ -24,11 +24,12 @@
 
 # 🏅 Paris 2024 Olympics DataOps & Analytics Project
 
-Bu proje, Paris 2024 Yaz Olimpiyat Oyunları verilerini kullanarak **End-to-End (Uçtan Uca)** bir Data Engineering pipeline'ı oluşturmayı hedefler. Azure ekosistemi üzerinde **Medallion Architecture** prensiplerine uygun olarak tasarlanmış; ADF, Databricks ve dbt teknolojilerini bir araya getiren modern bir veri platformudur.
+Bu proje, Paris 2024 Yaz Olimpiyat Oyunları verilerini kullanarak **End-to-End (Uçtan Uca)** bir Data Engineering pipeline'ı oluşturmayı hedefler. Azure ekosistemi üzerinde **Medallion Architecture** prensiplerine uygun olarak tasarlanmış; Docker, ADF, Databricks ve dbt teknolojilerini bir araya getiren modern, konteynerize edilmiş bir veri platformudur.
 * * *
 ## 🏗️ Mimari ve Kapsam
 Proje, verinin ham halinden (CSV/Parquet) raporlanabilir Altın (Gold) tablolar haline gelene kadar geçtiği tüm süreçleri kapsar.
 ### **Teknoloji Stack'i**
+-   **Konteynerizasyon:** Docker (Portable dbt Runtime)
 -   **Orkestrasyon:** Azure Data Factory (ADF)
 -   **Veri Ambarı & İşleme:** Azure Databricks (Spark & Serverless SQL Warehouse)
 -   **Transformasyon:** dbt (data build tool)
@@ -66,6 +67,7 @@ Storage Account üzerinde aşağıdaki container yapısını oluşturun:
 -   `source/raw_data`: Kaggle'dan indirilen ham CSV dosyaları.
 -   `bronze`, `silver`, `gold`: İşlenmiş veri katmanları.
 -   `dbx-managed`: Databricks Managed Catalog için ayrılmış alan.
+-   `monitoring`: monitoring tablolarını içeriyor. Dashboard için kullanılacak.
 
 ### 2\. IAM ve Güvenlik Yapılandırması (Önemli)
 
@@ -77,7 +79,7 @@ Azure üzerinde servislerin birbiriyle konuşabilmesi için şu yetkileri tanım
 
 ### 3\. Databricks Katalog ve Şema Kurulumu
 
-Databricks SQL Editor üzerinden Unity Catalog yapısını kurun:
+Databricks SQL Editor üzerinden Unity Catalog yapısını kurun (Öncesinde external locationları oluşturmanız gerekecektir):
 ```sql
     CREATE CATALOG IF NOT EXISTS dataops MANAGED LOCATION 'abfss://dbx-managed@sttrainingdataops.dfs.core.windows.net/';
     USE CATALOG dataops; 
@@ -85,6 +87,7 @@ Databricks SQL Editor üzerinden Unity Catalog yapısını kurun:
     CREATE SCHEMA IF NOT EXISTS bronze MANAGED LOCATION 'abfss://bronze@sttrainingdataops.dfs.core.windows.net/';
     CREATE SCHEMA IF NOT EXISTS silver MANAGED LOCATION 'abfss://silver@sttrainingdataops.dfs.core.windows.net/';
     CREATE SCHEMA IF NOT EXISTS gold MANAGED LOCATION 'abfss://gold@sttrainingdataops.dfs.core.windows.net/';
+    CREATE SCHEMA IF NOT EXISTS monitoring MANAGED LOCATION 'abfss://monitoring@sttrainingdataops.dfs.core.windows.net/';
 ```
 ### 4. Veri Tanımlama ve Bronze Tablo Yapıları
 
@@ -117,40 +120,52 @@ Bronze katmanındaki tablolar, ham verilerin (CSV/Parquet) şemalarını koruyar
     USING CSV
     OPTIONS (header='true', inferSchema='true')
     LOCATION 'abfss://bronze@sttrainingdataops.dfs.core.windows.net/nocs/';
+
+    CREATE TABLE IF NOT EXISTS dataops.monitoring.audit_logs (
+      model_name STRING,
+      execution_time TIMESTAMP,
+      row_count LONG,
+      status STRING
+    ) USING DELTA;
 ```
 ### 5\. ADF Pipeline Yapılandırması
 ADF üzerinde iki ana süreç yönetilmektedir:
 -   **Ingestion:** `raw_to_bronze` pipeline'ı, `bronze/param.json` dosyasındaki metadata'yı okuyarak ham verileri dinamik olarak Bronze katmanına taşır.
 -   **Transformation:** `dbt_dataops_gold_daily` pipeline'ı, Key Vault üzerinden aldığı token ile Databricks API'sini tetikler ve dbt modellerini koşturur.  
+
 ### 6\. dbt (Data Build Tool) Entegrasyonu
-`dev-training-dataops` reposundaki dbt projesini Databricks'e bağlayın:
--   `profiles.yml` dosyasında Databricks host ve http\_path bilgilerini tanımlayın.
--   `dbt_project.yml` içinde modelleri katmanlara göre organize edin.
--   `CI/CD:` GitHub Actions kullanarak kod her push edildiğinde dbt testlerinin çalışmasını sağlayın.  
+Bu repoyu bilgisayarınıza çekin.
+Proje dizininde yer alan `.env.example`  dosyasını Databricks bağlantı bilgilerinizle güncelleyin ve aşağıdaki komutu çalıştırın:
+```bash
+    mv .env.example .env
+```
+Docker Compose kullanarak tüm dbt modellerini Databricks üzerinde koşturabilirsiniz:
+```bash
+    docker-compose up
+```
+### 3\. CI/CD Süreci (GitHub Actions)
+### 
+Proje, her kod değişikliğinde otomatik olarak devreye giren gelişmiş bir pipeline yapısına sahiptir:
+-   **Static Analysis:** `sqlfluff` ile SQL kod standartları denetlenir ve otomatik düzeltilir.
+-   **Containerized Execution:** dbt komutları, GitHub Actions üzerinde özel olarak hazırlanmış `dataops-dbt-runner` Docker imajı içinde koşturulur. Bu sayede kurulum süreleri %70 oranında optimize edilmiştir.
+-   **Automated Docs:** Her başarılı run sonrası dbt dokümantasyonu otomatik olarak üretilir ve **GitHub Pages** üzerinde yayınlanır.
+* * *
 
-### 7\. CI/CD Süreci (GitHub Actions)
+### 📊 İzleme ve Gözlemlenebilirlik (DataOps Dashboard)
+### 
+Projenin sağlığı, performansı ve veri kalitesi **Databricks SQL Dashboard** üzerinden anlık olarak takip edilmektedir.
+-   **Pipeline Güvenilirliği:** Günlük başarılı/hatalı model çalışmaları.  
+-   **Model Performansı (Wall of Shame):** En çok kaynak tüketen ve optimizasyon gerektiren modellerin tespiti.
+-   **Veri Akış Hızı (Throughput):** Saniyede işlenen satır sayısı bazında SQL verimlilik analizi.
+-   **Veri Hacmi Drift Analizi:** Kaynak sistemlerden gelen veri miktarındaki ani değişimlerin takibi.
 
-Projenin dbt tarafı, kod kalitesini ve sürekliliği sağlamak için GitHub Actions ile entegre edilmiştir. Bu sayede manuel hataların önüne geçilir ve kod her zaman "çalışmaya hazır" durumda tutulur.  
+### 📖 Canlı Dökümantasyon ve Veri Soyağacı (Lineage)
+### 
+Projenin teknik detayları ve tablolar arası ilişkiler **dbt Docs** ile otomatik olarak belgelenmektedir.
+-   **[dbt Docs Sayfası](https://sadettinkilic.github.io/dev-training-dataops/)** Sağ alttaki 'Lineage' butonuna tıklayarak akış şemasını inceleyebilirsiniz.
+-   **İnteraktif Soyağacı:** Bronze -> Silver -> Gold katmanları arasındaki veri akışını görsel olarak inceleyebilirsiniz.
+-   **Veri Kataloğu:** Tablo şemaları, sütun açıklamaları ve uygulanan dbt testleri.
   
-**1\. Otomatik Denetimler ve Veri Kalitesi**
--   **SQLFluff (Linting):** Projeye dahil edilen tüm SQL kodları otomatik olarak taranır. Belirlenen yazım standartlarına (girintiler, büyük harf kullanımı vb.) uymayan kodlar tespit edilerek düzeltilir. Github Actions'ın repository üstünde yazma/okuma yetkisi vardır. Kodları otomatik olarak düzenler/düzenleyemediği satırları da logda belirtir.
--   **dbt Freshness:** `models/silver` altında yer alan `sources.yml` dosyasındaki freshness konfigürasyonunu okuyarak, Raw (Bronze) verinin güncel olup olmadığını denetler. Belirlenen süreden eski veri varsa pipeline uyarı verir.  
-
-**2\. Deployment Pipeline**
-    
-
-GitHub üzerindeki workflow dosyamız şu adımları otomatik olarak gerçekleştirir:
-
--   **Ortam Kurulumu:** Gerekli Python kütüphaneleri ve `dbt-databricks` adaptörü yüklenir.
--   **Bağlantı Testi:** Databricks SQL Warehouse bağlantısı doğrulanır.
--   **Kod Testi:** dbt modelleri üzerinde temel testler koşturularak logic hataları kontrol edilir.  
-      
-**3\. Sürüm Kontrolü ve Entegrasyon**
-    
-
--   **ADF & dbt Sync:** ADF üzerindeki Web Activity, her zaman GitHub'daki "Production" branch'inde bulunan en güncel dbt kodunu tetikler. Böylece geliştirme (dev) ortamında yapılan testler onaylanmadan canlıya geçmez.
-    
-
 * * *
 
 ## ⚙️ Ekstra Konfigürasyon Notları
@@ -168,19 +183,13 @@ Projeyi kendi ortamında çalıştırmak isteyenlerin şu ayarları yapması ger
 * * *
 
 ## 🛠️ Projenin Öne Çıkan Yetenekleri
-
+-   **Portable Runtime (Docker):** Geliştirme ortamı ile canlı ortam arasındaki farkları sıfıra indiren konteyner yapısı.
 -   **Dinamik Ingestion:** Yeni bir tablo eklemek için kod yazmaya gerek kalmadan sadece `param.json` dosyasını güncellemek yeterlidir.
-    
 -   **Secure Secrets:** Hiçbir şifre veya token kodun içerisinde (hardcoded) bulunmaz; tamamen Azure Key Vault üzerinden dinamik olarak çekilir.
-    
 -   **Medallion Architecture:** Veri kalitesi her katmanda artırılarak (Raw -> Bronze -> Silver -> Gold) güvenilir bir "Single Source of Truth" oluşturulur.
-    
--   **Serverless Efficiency:** Databricks Serverless SQL Warehouse kullanılarak, sadece sorgu çalıştığı sürece maliyet oluşur ve vCPU kota limitleri aşılır.
-
+-   **Zero-Install CI:** GitHub Actions'ın boş makinelerde kütüphane kurmak yerine hazır Docker imajlarını kullanarak hızlanması.
 -   **Automated DataOps:** GitHub Actions ile kod kalitesi (SQLFluff) ve veri tazeliği (dbt Freshness) otomatik olarak denetlenerek hata payı minimize edilmiştir.
-
 -   **Separation of Concerns:** Veri dönüşüm mantığı (dbt) ile veri taşıma/orkestrasyon mantığı (ADF) ayrı depolarda yönetilerek modüler ve bakımı kolay bir yapı sunulur.
-    
 
 * * *
 
@@ -191,3 +200,4 @@ Projede kullanılan veri seti Kaggle'daki [Paris 2024 Olympic Summer Games](http
 * * *
 
 _Bu döküman, modern DataOps prensiplerine sadık kalınarak hazırlanmıştır._
+
